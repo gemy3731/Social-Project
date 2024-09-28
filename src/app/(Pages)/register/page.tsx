@@ -44,7 +44,7 @@ export default function Register() {
       email: yup
         .string()
         .required("Email required")
-        .email("Enter invalid email"),
+        .email("Invalid email"),
       password: yup
         .string()
         .required("Password required")
