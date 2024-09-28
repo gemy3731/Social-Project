@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import NavBar from "./_components/NavBar/NavBar";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
+import "@fortawesome/fontawesome-free/css/all.min.css";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -28,7 +29,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
           <NavBar/>
-        <div className="container ">
+        <div className="container mx-auto mt-10 ">
         <AppRouterCacheProvider>
         {children}
         </AppRouterCacheProvider>
