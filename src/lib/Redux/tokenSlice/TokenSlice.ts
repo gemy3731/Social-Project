@@ -9,14 +9,13 @@ const tokenSlice = createSlice({
     reducers:{
         clearUserToken:(state)=>{
             state.userToken=null
+            localStorage.removeItem("token")
         },
         getUserToken:(state,action)=>{
             state.userToken=action.payload
-            console.log(action.payload);
-            
         }
     }
 })
 
 export default tokenSlice.reducer;
-export const {getUserToken} = tokenSlice.actions
+export const {getUserToken,clearUserToken} = tokenSlice.actions

@@ -18,6 +18,11 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import Image from 'next/image'
 import LPLogo from '../../../images/lp-logo.png'
+import { Button } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { store } from '@/lib/Redux/Store';
+import { clearUserToken } from '@/lib/Redux/tokenSlice/TokenSlice';
+import { useRouter } from 'next/navigation';
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -61,6 +66,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function NavBar() {
+  const {userToken} = useSelector((reduxStore:ReturnType<typeof store.getState>)=> reduxStore.userTokenReducer)
+  const dispatch = useDispatch()
+  const navigate = useRouter()
+  const handleLogOut = ()=>{
+    dispatch(clearUserToken())
+    navigate.push('/login')
+  }
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -110,6 +122,7 @@ export default function NavBar() {
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
     <Menu
+
       anchorEl={mobileMoreAnchorEl}
       anchorOrigin={{
         vertical: 'top',
@@ -123,42 +136,21 @@ export default function NavBar() {
       }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
+      
     >
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
+      <MenuItem >
+        {!userToken&&<Button href='/register' variant="text" sx={{color:'black', fontWeight:'600'}}>Register</Button>}
       </MenuItem>
       <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
+      {userToken?(
+              <Button onClick={handleLogOut} variant="text" sx={{color:'black', fontWeight:'600'}}>Logout</Button>
+            ):(
+            <Button href='/login' variant="text" sx={{color:'black', fontWeight:'600'}}>Login</Button>
+            )}
       </MenuItem>
     </Menu>
   );
-
+  
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ backgroundColor: "#252728" }}>
@@ -183,23 +175,14 @@ export default function NavBar() {
             height={40} 
              />
           </Typography>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+            {/* <IconButton size="large" aria-label="show 4 new mails" color="inherit">
               <Badge badgeContent={4} color="error">
                 <MailIcon />
               </Badge>
-            </IconButton>
-            <IconButton
+            </IconButton> */}
+            {/* <IconButton
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
@@ -207,8 +190,8 @@ export default function NavBar() {
               <Badge badgeContent={17} color="error">
                 <NotificationsIcon />
               </Badge>
-            </IconButton>
-            <IconButton
+            </IconButton> */}
+            {/* <IconButton
               size="large"
               edge="end"
               aria-label="account of current user"
@@ -218,7 +201,13 @@ export default function NavBar() {
               color="inherit"
             >
               <AccountCircle />
-            </IconButton>
+            </IconButton> */}
+            {!userToken&&<Button href='/register' variant="text" sx={{color:'white'}}>Register</Button>}
+            {userToken?(
+              <Button onClick={handleLogOut} variant="text" sx={{color:'white'}}>Logout</Button>
+            ):(
+            <Button href='/login' variant="text" sx={{color:'white'}}>Login</Button>
+            )}
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton
