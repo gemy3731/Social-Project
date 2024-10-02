@@ -6,19 +6,26 @@ import * as yup from 'yup';
 import Link from 'next/link';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
+import { store } from "@/lib/Redux/Store";
+import { getUserToken } from '@/lib/Redux/tokenSlice/TokenSlice';
 export default function Login() {
   const [isLoading,setIsloading] = useState(false)
   const [isError,setIsError] = useState(null)
   const navigate = useRouter()
+  const {userToken} = useSelector((reduxStore:ReturnType<typeof store.getState>)=> reduxStore.userTokenReducer)
+  const dispatch = useDispatch()
   const onSubmit = (values:{email:string,password:string})=>{
     setIsloading(true)
     setIsError(null)
     return axios.post('https://linked-posts.routemisr.com/users/signin',values)
       .then((res)=>{
-        setIsloading(false)
-        // navigate.push('/login')
-        console.log("res",res);
-        
+        setIsloading(false);
+        localStorage.setItem("token",res.data.token);
+        dispatch(getUserToken(res.data.token));
+        navigate.push('/');
+        // console.log("res",res);
+        // console.log("userToken",userToken);
       })
       .catch((err)=>{
         setIsloading(false)
@@ -51,6 +58,7 @@ export default function Login() {
         </Box>
       )}
       <Paper variant="elevation" square={false} elevation={1} sx={{ p: '30px', backgroundColor: '#252728',boxShadow:'2px 2px 8px #252728,-2px -2px 8px #252728' }}>
+      <Typography component={'h2'} variant='h4' sx={{color:'white',mb:'10px'}}>Login Now:</Typography>
         <form onSubmit={formik.handleSubmit} className='flex flex-col gap-5 text-white '>
          
           <TextField id="email" name='email' value={formik.values.email} onChange={formik.handleChange} label="Email..." variant="outlined" placeholder='Email' type='email' fullWidth sx={{ input: { color: 'white', "&::placeholder": { color: "gray" } } }} InputLabelProps={{ className: '!text-white' }} />
