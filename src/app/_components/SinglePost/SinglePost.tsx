@@ -51,7 +51,7 @@ export default function SinglePost({window,singlePost,closePost}:{window?:() => 
       setMobileOpen(!mobileOpen);
     }
   };
-  const date = new Date(singlePost?.createdAt).toDateString();
+  const date = singlePost?.createdAt ? new Date(singlePost.createdAt).toDateString() : "No date available";
   const drawer = (
     <div className='bg-[#252728] h-[100vh] text-white w-[100%] p-3'>
       
@@ -64,8 +64,8 @@ export default function SinglePost({window,singlePost,closePost}:{window?:() => 
                     aria-label="recipe"
                   >
                     <Image
-                      src={singlePost?.user.photo}
-                      alt={singlePost?.user.name}
+                      src={singlePost?.user.photo??''}
+                      alt={singlePost?.user.name??'Anonymous'}
                       width={30}
                       height={30}
                     ></Image>
@@ -92,7 +92,7 @@ export default function SinglePost({window,singlePost,closePost}:{window?:() => 
       </CardContent>
       <CardActions sx={{ display: "flex", justifyContent: "space-around" }}>
         <IconButton aria-label="add to favorites">
-          <FavoriteIcon sx={{ color: "white" }} />
+          <FavoriteIcon sx={{ color: "white" }}/>
         </IconButton>
         <IconButton aria-label="share">
           <ShareIcon sx={{ color: "white" }} />
@@ -138,7 +138,7 @@ export default function SinglePost({window,singlePost,closePost}:{window?:() => 
           >
             <MenuIcon />
           </IconButton>
-          <CloseIcon sx={{ml:'auto'}} onClick={closePost}/>
+          <CloseIcon sx={{ml:'auto',cursor: 'pointer'}} onClick={closePost as React.MouseEventHandler<SVGSVGElement>}/>
         </Toolbar>
       </AppBar>
       <Box
@@ -182,8 +182,8 @@ export default function SinglePost({window,singlePost,closePost}:{window?:() => 
       >
         <Toolbar />
         <Image
-                      src={singlePost?.image}
-                      alt={singlePost?.user.name}
+                      src={singlePost?.image??''}
+                      alt={singlePost?.user.name??'Anonymous'}
                       width={600}
                       height={600}
                     ></Image>
