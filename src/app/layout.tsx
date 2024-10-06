@@ -31,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <title>Linked Posts</title>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black`}>
         <Provider store={store}>
           <NavBar/>
         <div className="container mx-auto mt-10 ">
