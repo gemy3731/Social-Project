@@ -17,6 +17,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Post as PostInterface } from "@/interfaces/post.type";
 import { Box } from "@mui/material";
 import Image from "next/image";
+import avatarImg from '@/images/download.png'
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
 }
@@ -62,7 +63,7 @@ export default function Posts({ post,getSinglePost }: { post: PostInterface;getS
         avatar={
           <Avatar sx={{ cursor: "pointer" }} aria-label="recipe">
             <Image
-              src={post.user.photo}
+              src={post.user.photo??avatarImg}
               alt={post.user.name}
               width={50}
               height={50}
@@ -99,6 +100,7 @@ export default function Posts({ post,getSinglePost }: { post: PostInterface;getS
           component="img"
           height="194"
           image={post.image}
+          src={post.image}
           alt="Paella dish"
           onClick={()=>{getSinglePost(post._id)}}
         />
@@ -132,7 +134,7 @@ export default function Posts({ post,getSinglePost }: { post: PostInterface;getS
                     aria-label="recipe"
                   >
                     <Image
-                      src={post.comments[0]?.commentCreator.photo}
+                      src={post.comments[0]?.commentCreator.photo??avatarImg}
                       alt={post.comments[0]?.commentCreator.name}
                       width={30}
                       height={30}
@@ -155,6 +157,9 @@ export default function Posts({ post,getSinglePost }: { post: PostInterface;getS
               />
               <Typography sx={{ marginBlock: 2 }}>
                 {post.comments[0]?.content}
+              </Typography>
+              <Typography sx={{ marginBlock: 1, color:'#1aa3e9',textDecoration:'underLine', cursor:'pointer' }} onClick={()=>{getSinglePost(post._id)}}>
+                See All
               </Typography>
             </Box>
           </CardContent>

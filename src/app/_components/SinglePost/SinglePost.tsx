@@ -21,6 +21,8 @@ import { Avatar, CardActions, CardContent, CardHeader } from '@mui/material';
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
 import CloseIcon from '@mui/icons-material/Close';
+import avatarImg from '@/images/download.png'
+import Comment from '../Comments/Comment';
 
 const drawerWidth = 400;
 
@@ -53,7 +55,7 @@ export default function SinglePost({window,singlePost,closePost}:{window?:() => 
   };
   const date = singlePost?.createdAt ? new Date(singlePost.createdAt).toDateString() : "No date available";
   const drawer = (
-    <div className='bg-[#252728] h-[100vh] text-white w-[100%] p-3'>
+    <div className='bg-[#252728] h-[auto] text-white w-[100%] p-3'>
       
       <Divider />
       <CardHeader
@@ -64,7 +66,7 @@ export default function SinglePost({window,singlePost,closePost}:{window?:() => 
                     aria-label="recipe"
                   >
                     <Image
-                      src={singlePost?.user.photo??''}
+                      src={singlePost?.user.photo??avatarImg}
                       alt={singlePost?.user.name??'Anonymous'}
                       width={30}
                       height={30}
@@ -99,18 +101,7 @@ export default function SinglePost({window,singlePost,closePost}:{window?:() => 
         </IconButton>
       </CardActions>
       <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+      {singlePost?.comments.map((comment)=><Comment comment={comment}/>)}  
     </div>
   );
 
