@@ -158,9 +158,10 @@ export default function Posts({ post,getSinglePost }: { post: PostInterface;getS
               <Typography sx={{ marginBlock: 2 }}>
                 {post.comments[0]?.content}
               </Typography>
-              <Typography sx={{ marginBlock: 1, color:'#1aa3e9',textDecoration:'underLine', cursor:'pointer' }} onClick={()=>{getSinglePost(post._id)}}>
+              {post.comments[1]&&<Typography sx={{ marginBlock: 1, color:'#1aa3e9',textDecoration:'underLine', cursor:'pointer' }} onClick={()=>{getSinglePost(post._id)}}>
                 See All
-              </Typography>
+              </Typography>}
+              
             </Box>
           </CardContent>
         )}

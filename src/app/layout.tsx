@@ -7,6 +7,8 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { Provider } from "react-redux";
 import { store } from "@/lib/Redux/Store";
+import { ThemeProvider } from '@mui/material/styles';
+import theme from '../theme';
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -36,7 +38,9 @@ export default function RootLayout({
           <NavBar/>
         <div className="container mx-auto mt-10 ">
         <AppRouterCacheProvider>
+        <ThemeProvider theme={theme}>
         {children}
+        </ThemeProvider>
         </AppRouterCacheProvider>
         </div>
         </Provider>
