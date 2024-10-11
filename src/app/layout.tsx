@@ -9,6 +9,7 @@ import { Provider } from "react-redux";
 import { store } from "@/lib/Redux/Store";
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../theme';
+import { Toaster } from "react-hot-toast";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -40,6 +41,7 @@ export default function RootLayout({
         <AppRouterCacheProvider>
         <ThemeProvider theme={theme}>
         {children}
+        <Toaster />
         </ThemeProvider>
         </AppRouterCacheProvider>
         </div>
