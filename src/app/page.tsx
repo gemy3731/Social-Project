@@ -53,6 +53,8 @@ export default function Home() {
   const handleOpen = () => {
     setOpen(true);
     removeFocus.current?.blur();
+    
+    
   };
   const handleClose = () => {
     setOpen(false);
@@ -60,15 +62,19 @@ export default function Home() {
   useEffect(() => {
     getAllPosts();
   }, []);
+  useEffect(() => {
+    console.log("postImgRef",postImgRef);
+  }, [postImgRef]);
   const getAllPosts = () => {
     axios
-      .get("https://linked-posts.routemisr.com/posts?limit=50", {
+      .get("https://linked-posts.routemisr.com/posts?page=39", {
         headers: {
           token: localStorage.getItem("token"),
         },
       })
       .then((res) => {
         setPosts(res.data.posts);
+        console.log("res", res);
       })
       .catch((err) => {
         console.log("err", err);
@@ -95,20 +101,26 @@ export default function Home() {
     const payLoad = new FormData()
     const postCation = postCaptionRef.current?.value||'';
     payLoad.append('body',postCation)
-    if(postCaptionRef.current?.files?.[0]){
-      const postImg = postCaptionRef.current?.files[0];
-      payLoad.append('image',postImg)
-    }
+
+    
+      if( postImgRef.current?.files?.[0]){
+        console.log("hlaaaaaaaaaaaaaaaa");
+        const postImg = postImgRef.current?.files[0];
+        payLoad.append('image',postImg)
+      }
+
     axios.post("https://linked-posts.routemisr.com/posts",payLoad,{
       headers: {
         token: localStorage.getItem("token"),
       },
     }).then((res)=>{
       toast.success('Post Created Successfully',{position:'top-right'})
+      console.log("res", res);
       setOpen(false);
     }).catch((err)=>{
       toast.error('Something Went wrong',{position:'top-right'})
       setOpen(false);
+      console.log("err", err);
     })
   };
   return (
