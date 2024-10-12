@@ -37,7 +37,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black`}>
         <Provider store={store}>
           <NavBar/>
-        <div className="container mx-auto mt-10 ">
+        <div className="container mx-auto mt-20 ">
         <AppRouterCacheProvider>
         <ThemeProvider theme={theme}>
         {children}
