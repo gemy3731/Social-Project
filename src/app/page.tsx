@@ -45,39 +45,55 @@ const VisuallyHiddenInput = styled("input")({
 });
 export default function Home() {
   const [posts, setPosts] = useState<PostInterface[]>([]);
+  const [page, setPage] = useState<number>(1);
   const [singlePost, setSinglePost] = useState<PostInterface | null>(null);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
   const removeFocus = useRef<HTMLInputElement>(null);
   const postCaptionRef = useRef<HTMLInputElement>(null);
   const postImgRef = useRef<HTMLInputElement>(null);
+
   const handleOpen = () => {
     setOpen(true);
     removeFocus.current?.blur();
-    
-    
   };
   const handleClose = () => {
     setOpen(false);
   };
   useEffect(() => {
-    getAllPosts();
-  }, []);
+    loadMorePosts(page);
+  }, [page]);
+  const loadMorePosts = async (page: number) => {
+    setLoading(true);
+    const newPosts = await getAllPosts(page);
+    setPosts((prevPosts) => [...prevPosts, ...newPosts]);
+    setLoading(false);
+  };
   useEffect(() => {
-    console.log("postImgRef",postImgRef);
-  }, [postImgRef]);
-  const getAllPosts = () => {
-    axios
-      .get("https://linked-posts.routemisr.com/posts?page=39", {
+    const handleScroll = () => {
+      const scrollHeight = document.documentElement.scrollHeight;
+      const scrollTop = document.documentElement.scrollTop;
+      const clientHeight = document.documentElement.clientHeight;
+
+      if (scrollTop + clientHeight >= scrollHeight - 10 && !loading) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [loading]);
+  const getAllPosts = (page: number) => {
+    return axios
+      .get(`https://linked-posts.routemisr.com/posts?page=${page}`, {
         headers: {
           token: localStorage.getItem("token"),
         },
       })
-      .then((res) => {
-        setPosts(res.data.posts);
-        console.log("res", res);
-      })
+      .then((res) => res.data.posts)
       .catch((err) => {
-        console.log("err", err);
+        toast.error("Something Went wrong", { position: "top-center" });
       });
   };
   const getSinglePost = (id: string): void => {
@@ -91,37 +107,38 @@ export default function Home() {
         setSinglePost(res.data.post);
       })
       .catch((err) => {
-        console.log("err", err);
+        toast.error("Something Went wrong", { position: "top-center" });
       });
   };
   const closePost = (): void => {
     setSinglePost(null);
   };
   const createPost = () => {
-    const payLoad = new FormData()
-    const postCation = postCaptionRef.current?.value||'';
-    payLoad.append('body',postCation)
+    const payLoad = new FormData();
+    const postCation = postCaptionRef.current?.value || "";
+    payLoad.append("body", postCation);
 
-    
-      if( postImgRef.current?.files?.[0]){
-        console.log("hlaaaaaaaaaaaaaaaa");
-        const postImg = postImgRef.current?.files[0];
-        payLoad.append('image',postImg)
-      }
+    if (postImgRef.current?.files?.[0]) {
+      const postImg = postImgRef.current?.files[0];
+      payLoad.append("image", postImg);
+    }
 
-    axios.post("https://linked-posts.routemisr.com/posts",payLoad,{
-      headers: {
-        token: localStorage.getItem("token"),
-      },
-    }).then((res)=>{
-      toast.success('Post Created Successfully',{position:'top-right'})
-      console.log("res", res);
-      setOpen(false);
-    }).catch((err)=>{
-      toast.error('Something Went wrong',{position:'top-right'})
-      setOpen(false);
-      console.log("err", err);
-    })
+    axios
+      .post("https://linked-posts.routemisr.com/posts", payLoad, {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        toast.success("Post Created Successfully", { position: "top-right" });
+        console.log("res", res);
+        setOpen(false);
+      })
+      .catch((err) => {
+        toast.error("Something Went wrong", { position: "top-right" });
+        setOpen(false);
+        console.log("err", err);
+      });
   };
   return (
     <>
@@ -150,16 +167,19 @@ export default function Home() {
                 multiline
                 placeholder="What's on your mind?..."
               />
-              <IconButton sx={{mx: "auto", display: "block"}}>
-              <AddPhotoAlternateIcon
-                titleAccess="Create Post"
-                sx={{ color: "white" }}
-              />
+              <IconButton sx={{ mx: "auto", display: "block" }}>
+                <AddPhotoAlternateIcon
+                  titleAccess="Create Post"
+                  sx={{ color: "white" }}
+                />
               </IconButton>
             </Box>
             {posts.map((post) => (
               <Posts key={post._id} post={post} getSinglePost={getSinglePost} />
             ))}
+            {loading && (
+              <i className="fa fa-spinner fa-spin text-[#252728] fa-2x mx-auto my-3"></i>
+            )}
           </Grid>
 
           <Grid item xs={3}></Grid>
@@ -190,7 +210,7 @@ export default function Home() {
             Create Post
           </Typography>
           <Input
-            inputComponent='textarea'
+            inputComponent="textarea"
             inputRef={postCaptionRef}
             title="Create Post123"
             slots={{ input: InputElement }}
@@ -204,7 +224,7 @@ export default function Home() {
               position: "relative",
               width: "fit-content",
               mx: "auto",
-              display:'block',
+              display: "block",
               cursor: "pointer",
             }}
           >
