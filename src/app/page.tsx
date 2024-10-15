@@ -20,6 +20,7 @@ import { styled } from "@mui/system";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { store } from "@/lib/Redux/Store";
+import Loader from "./_components/Loader/Loader";
 
 
 const InputElement = styled("input")(
@@ -53,7 +54,7 @@ export default function Home() {
   const [singlePost, setSinglePost] = useState<PostInterface | null>(null);
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-
+  const [isPageLoading, setIsPageLoading] = useState<boolean>(false);
   const dispatch = useDispatch()
   const removeFocus = useRef<HTMLInputElement>(null);
   const postCaptionRef = useRef<HTMLInputElement>(null);
@@ -104,7 +105,7 @@ export default function Home() {
       });
   };
   const getSinglePost = (id: string): void => {
-
+    setIsPageLoading(true);
     axios
       .get(`https://linked-posts.routemisr.com/posts/${id}`, {
         headers: {
@@ -113,11 +114,11 @@ export default function Home() {
       })
       .then((res) => {
         setSinglePost(res.data.post);
-
+        setIsPageLoading(false)
       })
       .catch((err) => {
         toast.error("Something Went wrong", { position: "top-center" });
-
+        setIsPageLoading(false)
       });
   };
   const closePost = (): void => {
@@ -132,6 +133,7 @@ export default function Home() {
       const postImg = postImgRef.current?.files[0];
       payLoad.append("image", postImg);
     }
+    setIsPageLoading(true)
     axios
       .post("https://linked-posts.routemisr.com/posts", payLoad, {
         headers: {
@@ -140,13 +142,13 @@ export default function Home() {
       })
       .then((res) => {
         toast.success("Post Created Successfully", { position: "top-right" });
-        console.log("res", res);
+        setIsPageLoading(false)
         setOpen(false);
       })
       .catch((err) => {
         toast.error("Something Went wrong", { position: "top-right" });
         setOpen(false);
-        console.log("err", err);
+        setIsPageLoading(false)
       });
   };
   const createComment = (data:{content:string,post:string})=>{
@@ -161,9 +163,14 @@ export default function Home() {
   
   return (
     <>
+    
+    {isPageLoading&&<Loader/>}
+    
       <div className={singlePost ? "hidden" : ""}>
         <Grid container spacing={3}>
-          <Grid item xs={3}> </Grid>
+          <Grid item xs={3}>
+            {" "}
+          </Grid>
 
           <Grid
             item
@@ -195,7 +202,7 @@ export default function Home() {
               </IconButton>
             </Box>
             {posts.map((post) => (
-              <Posts key={post._id} post={post} getSinglePost={getSinglePost}  />
+              <Posts key={post._id} post={post} getSinglePost={getSinglePost} />
             ))}
             {loading && (
               <i className="fa fa-spinner fa-spin text-[#252728] fa-2x mx-auto my-3"></i>
@@ -205,14 +212,21 @@ export default function Home() {
           <Grid item xs={3}></Grid>
         </Grid>
       </div>
+       
+        <div
+          className={
+            singlePost ? "fixed top-0 bottom-0 left-0 right-0 z-50" : "hidden"
+          }
+        >
+          <SinglePost
+            singlePost={singlePost}
+            setSinglePost={setSinglePost}
+            closePost={closePost}
+            createComment={createComment}
+          />
+        </div>
+      
 
-      <div
-        className={
-          singlePost ? "fixed top-0 bottom-0 left-0 right-0 z-50" : "hidden"
-        }
-      >
-        <SinglePost singlePost={singlePost} setSinglePost={setSinglePost} closePost={closePost} createComment={createComment}  />
-      </div>
       {/* Create comment */}
       <Modal
         aria-labelledby="Create-comment"
