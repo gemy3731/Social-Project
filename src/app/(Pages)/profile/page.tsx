@@ -20,6 +20,7 @@ import { User } from "@/interfaces/user.type";
 import avatarImg from "@/images/default-avatar-profile-picture-male-icon.webp";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { redirect } from "next/navigation";
 // const StyledInput = styled(Input)(({ theme }) => ({
 //     input: {
 //       color: 'red', // Change the input text color to red
@@ -42,6 +43,11 @@ export default function page() {
   const [userData, setUserData] = useState<User>();
   const [showBtn, setShowBtn] = useState(false);
   const [updatePass, setUpdatePass] = useState(false);
+  useEffect(() => {
+    if(!localStorage.getItem("token")){
+      redirect('/login')
+    }
+  }, []);
   useEffect(() => {
     getUserData();
   }, []);

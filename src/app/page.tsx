@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { store } from "@/lib/Redux/Store";
 import Loader from "./_components/Loader/Loader";
+import { redirect } from "next/navigation";
 
 
 const InputElement = styled("input")(
@@ -56,6 +57,11 @@ export default function Home() {
   const handleClose = () => {
     setOpen(false);
   };
+  useEffect(() => {
+    if(!localStorage.getItem("token")){
+      redirect('/login')
+    }
+  }, []);
   useEffect(() => {
     loadMorePosts(page);
   }, [page]);
