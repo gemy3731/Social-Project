@@ -1,17 +1,7 @@
 "use client";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import {
-  Box,
-  Divider,
-  Grid,
-  Input,
-  Typography,
-  Modal,
-  Button,
-  IconButton,
-  Paper,
-} from "@mui/material";
+import {Box,Divider,Grid,Input,Typography,Modal,Button,IconButton,Paper} from "@mui/material";
 import Posts from "./_components/Posts/Posts";
 import { Post as PostInterface } from "./../interfaces/post.type";
 import SinglePost from "./_components/SinglePost/SinglePost";
@@ -96,10 +86,7 @@ export default function Home() {
           token: localStorage.getItem("token"),
         },
       })
-      .then((res) => {
-        console.log(res, "response");
-        return res.data.posts;
-      })
+      .then((res) => res.data.posts)
       .catch((err) => {
         toast.error("Something Went wrong", { position: "top-center" });
       });
@@ -163,9 +150,7 @@ export default function Home() {
   
   return (
     <>
-    
     {isPageLoading&&<Loader/>}
-    
       <div className={singlePost ? "hidden" : ""}>
         <Grid container spacing={3}>
           <Grid item xs={3}>

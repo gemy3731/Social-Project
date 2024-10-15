@@ -210,12 +210,7 @@ export default function NavBar() {
           </Link>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <Button href="/" variant="text" sx={{ color: "white" }}>
-              Home
-            </Button>
-            <Button href="/profile" variant="text" sx={{ color: "white" }}>
-              Profile
-            </Button>
+           
 
             {!userToken && (
               <Button href="/register" variant="text" sx={{ color: "white" }}>
@@ -223,6 +218,13 @@ export default function NavBar() {
               </Button>
             )}
             {userToken ? (
+              <Box>
+ <Button href="/" variant="text" sx={{ color: "white" }}>
+              Home
+            </Button>
+            <Button href="/profile" variant="text" sx={{ color: "white" }}>
+              Profile
+            </Button>
               <Button
                 onClick={handleLogOut}
                 variant="text"
@@ -230,6 +232,7 @@ export default function NavBar() {
               >
                 Logout
               </Button>
+              </Box>
             ) : (
               <Button href="/login" variant="text" sx={{ color: "white" }}>
                 Login
