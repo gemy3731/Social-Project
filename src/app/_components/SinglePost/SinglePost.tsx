@@ -60,7 +60,7 @@ export default function SinglePost({
     ? new Date(singlePost.createdAt).toDateString()
     : "No date available";
   const drawer = (
-    <div className="bg-[#252728] h-[auto] text-white w-[100%] p-3">
+    <div className="bg-[#252728] h-[auto] h-min-[100vh] text-white w-[100%] p-3 pt-[72px]">
       <Divider />
       <CardHeader
         sx={{ p: 0 }}
@@ -105,12 +105,14 @@ export default function SinglePost({
         </IconButton>
       </CardActions>
       <Divider />
+      <Box sx={{minHeight:'100vh'}}>
       {singlePost?.comments.map((comment) => (
-        <Comment comment={comment} />
+        <Comment key={comment._id} comment={comment} />
       ))}
+      </Box>
     </div>
   );
-
+  
   const container =
     window !== undefined ? () => window().document.body : undefined;
 
@@ -125,7 +127,7 @@ export default function SinglePost({
           bgcolor: "#252728",
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{pt:13,pb:2}}>
           <IconButton
             color="inherit"
             aria-label="open drawer"

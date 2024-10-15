@@ -17,6 +17,10 @@ import SinglePost from "./_components/SinglePost/SinglePost";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { styled } from "@mui/system";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { setSpecificPost } from "@/lib/Redux/postSlice/PostSlice";
+import { store } from "@/lib/Redux/Store";
+
 
 const InputElement = styled("input")(
   ({ theme }) => `
@@ -49,10 +53,11 @@ export default function Home() {
   const [singlePost, setSinglePost] = useState<PostInterface | null>(null);
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-
+  const dispatch = useDispatch()
   const removeFocus = useRef<HTMLInputElement>(null);
   const postCaptionRef = useRef<HTMLInputElement>(null);
   const postImgRef = useRef<HTMLInputElement>(null);
+  const {specificPost} = useSelector((reduxStore:ReturnType<typeof store.getState>)=>reduxStore.postReducer)
 
   const handleOpen = () => {
     setOpen(true);
@@ -62,6 +67,8 @@ export default function Home() {
     setOpen(false);
   };
   useEffect(() => {
+    console.log("hlaaaaaaaaaaaaaaa");
+
     loadMorePosts(page);
   }, [page]);
   const loadMorePosts = async (page: number) => {
@@ -91,7 +98,10 @@ export default function Home() {
           token: localStorage.getItem("token"),
         },
       })
-      .then((res) => res.data.posts)
+      .then((res) => {
+        console.log(res, "response");
+        return res.data.posts;
+      })
       .catch((err) => {
         toast.error("Something Went wrong", { position: "top-center" });
       });
@@ -105,6 +115,7 @@ export default function Home() {
       })
       .then((res) => {
         setSinglePost(res.data.post);
+        dispatch(setSpecificPost(true))
       })
       .catch((err) => {
         toast.error("Something Went wrong", { position: "top-center" });
@@ -112,6 +123,7 @@ export default function Home() {
   };
   const closePost = (): void => {
     setSinglePost(null);
+    dispatch(setSpecificPost(false))
   };
   const createPost = () => {
     const payLoad = new FormData();
@@ -188,14 +200,15 @@ export default function Home() {
 
       <div
         className={
-          singlePost ? "fixed top-0 bottom-0 left-0 right-0" : "hidden"
+          singlePost ? "fixed top-0 bottom-0 left-0 right-0 z-50" : "hidden"
         }
       >
         <SinglePost singlePost={singlePost} closePost={closePost} />
       </div>
+      {/* Create comment */}
       <Modal
-        aria-labelledby="unstyled-modal-title"
-        aria-describedby="unstyled-modal-description"
+        aria-labelledby="Create-comment"
+        aria-describedby="Create-comment"
         open={open}
         onClose={handleClose}
         sx={{

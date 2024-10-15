@@ -196,7 +196,7 @@ export default function NavBar() {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1,zIndex:'10' }}>
       <AppBar position="fixed" sx={{ backgroundColor: "#252728",px:4 }}>
         <Toolbar>
           <Link href="/">

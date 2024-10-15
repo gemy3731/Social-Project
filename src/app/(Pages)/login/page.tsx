@@ -24,8 +24,6 @@ export default function Login() {
         localStorage.setItem("token",res.data.token);
         dispatch(getUserToken(res.data.token));
         navigate.push('/');
-        // console.log("res",res);
-        // console.log("userToken",userToken);
       })
       .catch((err)=>{
         setIsloading(false)

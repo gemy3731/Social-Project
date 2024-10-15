@@ -15,7 +15,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import CommentIcon from "@mui/icons-material/Comment";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Post as PostInterface } from "@/interfaces/post.type";
-import { Box } from "@mui/material";
+import { Box, Input, TextField } from "@mui/material";
 import Image from "next/image";
 import avatarImg from '@/images/download.png'
 interface ExpandMoreProps extends IconButtonProps {
@@ -30,20 +30,6 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   transition: theme.transitions.create("transform", {
     duration: theme.transitions.duration.shortest,
   }),
-  //   variants: [
-  //     {
-  //       props: ({ expand }) => !expand,
-  //       style: {
-  //         transform: 'rotate(0deg)',
-  //       },
-  //     },
-  //     {
-  //       props: ({ expand }) => !!expand,
-  //       style: {
-  //         transform: 'rotate(180deg)',
-  //       },
-  //     },
-  //   ],
 }));
 
 export default function Posts({ post,getSinglePost }: { post: PostInterface;getSinglePost:Function }) {
@@ -161,7 +147,8 @@ export default function Posts({ post,getSinglePost }: { post: PostInterface;getS
               {post.comments[1]&&<Typography sx={{ marginBlock: 1, color:'#1aa3e9',textDecoration:'underLine', cursor:'pointer' }} onClick={()=>{getSinglePost(post._id)}}>
                 See All
               </Typography>}
-              
+              {/* <TextField  placeholder='Comment...' type='text' fullWidth sx={{ input: { color: 'white',border: "1px solid #EAEAEA",borderRadius:'100vh',"&::placeholder": { color: "gray" } } }} InputLabelProps={{ className: '!text-white' }} /> */}
+              <Input onFocus={()=>{getSinglePost(post._id)}} disableUnderline placeholder='Comment...' type='text' fullWidth sx={{mt:1,input: { color: 'white',p:1,border: "1px solid gray",borderRadius:'100vh',"&::placeholder": { color: "gray" } } }}></Input>
             </Box>
           </CardContent>
         )}
