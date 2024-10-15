@@ -10,6 +10,7 @@ import {
   Modal,
   Button,
   IconButton,
+  Paper,
 } from "@mui/material";
 import Posts from "./_components/Posts/Posts";
 import { Post as PostInterface } from "./../interfaces/post.type";
@@ -18,7 +19,6 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { styled } from "@mui/system";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { setSpecificPost } from "@/lib/Redux/postSlice/PostSlice";
 import { store } from "@/lib/Redux/Store";
 
 
@@ -53,12 +53,11 @@ export default function Home() {
   const [singlePost, setSinglePost] = useState<PostInterface | null>(null);
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+
   const dispatch = useDispatch()
   const removeFocus = useRef<HTMLInputElement>(null);
   const postCaptionRef = useRef<HTMLInputElement>(null);
   const postImgRef = useRef<HTMLInputElement>(null);
-  const {specificPost} = useSelector((reduxStore:ReturnType<typeof store.getState>)=>reduxStore.postReducer)
-
   const handleOpen = () => {
     setOpen(true);
     removeFocus.current?.blur();
@@ -67,8 +66,6 @@ export default function Home() {
     setOpen(false);
   };
   useEffect(() => {
-    console.log("hlaaaaaaaaaaaaaaa");
-
     loadMorePosts(page);
   }, [page]);
   const loadMorePosts = async (page: number) => {
@@ -107,6 +104,7 @@ export default function Home() {
       });
   };
   const getSinglePost = (id: string): void => {
+
     axios
       .get(`https://linked-posts.routemisr.com/posts/${id}`, {
         headers: {
@@ -115,15 +113,15 @@ export default function Home() {
       })
       .then((res) => {
         setSinglePost(res.data.post);
-        dispatch(setSpecificPost(true))
+
       })
       .catch((err) => {
         toast.error("Something Went wrong", { position: "top-center" });
+
       });
   };
   const closePost = (): void => {
     setSinglePost(null);
-    dispatch(setSpecificPost(false))
   };
   const createPost = () => {
     const payLoad = new FormData();
@@ -134,7 +132,6 @@ export default function Home() {
       const postImg = postImgRef.current?.files[0];
       payLoad.append("image", postImg);
     }
-
     axios
       .post("https://linked-posts.routemisr.com/posts", payLoad, {
         headers: {
@@ -152,11 +149,21 @@ export default function Home() {
         console.log("err", err);
       });
   };
+  const createComment = (data:{content:string,post:string})=>{
+    axios.post('https://linked-posts.routemisr.com/comments',data,{
+      headers: {
+        token: localStorage.getItem("token"),
+      },
+    }).then((res)=>{console.log("res",res);
+    }).catch((err)=>{console.log('err',err);
+    })
+  }
+  
   return (
     <>
       <div className={singlePost ? "hidden" : ""}>
         <Grid container spacing={3}>
-          <Grid item xs={3}></Grid>
+          <Grid item xs={3}> </Grid>
 
           <Grid
             item
@@ -177,6 +184,7 @@ export default function Home() {
                 slots={{ input: InputElement }}
                 fullWidth
                 multiline
+                disableUnderline
                 placeholder="What's on your mind?..."
               />
               <IconButton sx={{ mx: "auto", display: "block" }}>
@@ -187,7 +195,7 @@ export default function Home() {
               </IconButton>
             </Box>
             {posts.map((post) => (
-              <Posts key={post._id} post={post} getSinglePost={getSinglePost} />
+              <Posts key={post._id} post={post} getSinglePost={getSinglePost}  />
             ))}
             {loading && (
               <i className="fa fa-spinner fa-spin text-[#252728] fa-2x mx-auto my-3"></i>
@@ -203,7 +211,7 @@ export default function Home() {
           singlePost ? "fixed top-0 bottom-0 left-0 right-0 z-50" : "hidden"
         }
       >
-        <SinglePost singlePost={singlePost} closePost={closePost} />
+        <SinglePost singlePost={singlePost} setSinglePost={setSinglePost} closePost={closePost} createComment={createComment}  />
       </div>
       {/* Create comment */}
       <Modal
@@ -225,10 +233,11 @@ export default function Home() {
           <Input
             inputComponent="textarea"
             inputRef={postCaptionRef}
-            title="Create Post123"
+            title="Create Post"
             slots={{ input: InputElement }}
             fullWidth
             multiline
+            disableUnderline
             placeholder="What's on your mind?..."
           />
 

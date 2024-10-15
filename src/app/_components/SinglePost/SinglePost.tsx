@@ -1,4 +1,3 @@
-import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -17,15 +16,30 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { Post as PostInterface } from "@/interfaces/post.type";
 import Image from "next/image";
-import { Avatar, CardActions, CardContent, CardHeader } from "@mui/material";
+import { Avatar, Button, CardActions, CardContent, CardHeader, Input, InputBase, Paper } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
 import CloseIcon from "@mui/icons-material/Close";
 import avatarImg from "@/images/download.png";
 import Comment from "../Comments/Comment";
-
+import styled from "@emotion/styled";
+import SendIcon from '@mui/icons-material/Send';
+import { useRef, useState } from "react";
 const drawerWidth = 400;
 
+const InputElement = styled("input")(
+  ({ theme }) => `
+  width:100%;
+  color:white;
+  background-color:#252728;
+  padding:8px;
+  resize:none;
+  &:focus{
+    outline:0
+  };
+  &::placeholder{ color: gray};
+`
+);
 interface Props {
   window?: () => Window;
 }
@@ -34,13 +48,27 @@ export default function SinglePost({
   window,
   singlePost,
   closePost,
+  createComment,
+  setSinglePost,
 }: {
   window?: () => Window;
   singlePost: PostInterface | null;
   closePost: Function;
+  createComment:Function;
+  setSinglePost:any
 }) {
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [isClosing, setIsClosing] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [comment, setComment] = useState('');
+
+  const commentRef = useRef<HTMLInputElement>(null);
+
+  const handleCommentChange = (e:React.FocusEvent<HTMLInputElement>)=>{
+    setComment(e.target.value)
+  }
+  const createNewComment = ()=>{
+    createComment({content:comment,post:singlePost?._id})
+  }
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -105,10 +133,34 @@ export default function SinglePost({
         </IconButton>
       </CardActions>
       <Divider />
-      <Box sx={{minHeight:'100vh'}}>
-      {singlePost?.comments.map((comment) => (
-        <Comment key={comment._id} comment={comment} />
-      ))}
+
+      <Paper
+        component="form"
+        sx={{ p: "2px 4px", display: "flex", alignItems: "center",bgcolor:'#252728' }}
+      >
+        <Input
+          onBlur={handleCommentChange}
+          sx={{ ml: 1, flex: 1 }}
+          placeholder="What's on your mind?..."
+          title="Create Comment"
+          multiline
+          fullWidth
+          disableUnderline
+          slots={{ input: InputElement }}
+          inputProps={{
+            "aria-label": "What's on your mind?"
+          }}
+        />
+        <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+        <IconButton color="primary" sx={{ p: "10px" }} aria-label="directions">
+          <SendIcon sx={{color:'white'}} onClick={createNewComment} />
+        </IconButton>
+      </Paper>
+      <Divider />
+      <Box sx={{ minHeight: "100vh" }}>
+        {singlePost?.comments.map((comment) => (
+          <Comment key={comment._id} comment={comment} />
+        ))}
       </Box>
     </div>
   );
