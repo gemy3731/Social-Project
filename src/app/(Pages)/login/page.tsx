@@ -49,7 +49,7 @@ export default function Login() {
     })
   })
   return (
-    <div className="w-[60%] mx-auto">
+    <div className="w-[60%] mx-auto mt-28">
       {isError&&(
         <Box sx={{textAlign:'center',mb:'10px'}}>
           <Typography color='error'>{isError}</Typography>
