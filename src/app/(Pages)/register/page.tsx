@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react'
-import { Input, MenuItem, Select, InputLabel, Paper, TextField, FormControl, FormControlLabel, FormLabel, Button, Typography, Box } from '@mui/material'
+import { MenuItem, Select, InputLabel, Paper, TextField, FormControl, Button, Typography, Box } from '@mui/material'
 import { useFormik } from 'formik'
 import * as yup from 'yup';
 import Link from 'next/link';
@@ -14,7 +14,7 @@ export default function Register() {
     setIsloading(true)
     setIsError(null)
     return axios.post('https://linked-posts.routemisr.com/users/signup',values)
-      .then((res)=>{
+      .then(()=>{
         setIsloading(false)
         navigate.push('/login')
       })
@@ -22,7 +22,6 @@ export default function Register() {
         setIsloading(false)
         setIsError(err.response.data.error)
         setTimeout(()=>setIsError(null),5000)
-        console.log("err",err)
       })
   }
   const formik = useFormik({

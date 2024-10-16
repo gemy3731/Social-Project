@@ -4,31 +4,31 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { Post as PostInterface } from "@/interfaces/post.type";
 import Image from "next/image";
-import { Avatar, Button, CardActions, CardContent, CardHeader, Input, InputBase, Paper } from "@mui/material";
+import {
+  Avatar,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Input,
+  Paper,
+} from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
 import CloseIcon from "@mui/icons-material/Close";
 import avatarImg from "@/images/download.png";
 import Comment from "../Comments/Comment";
 import styled from "@emotion/styled";
-import SendIcon from '@mui/icons-material/Send';
-import { useRef, useState } from "react";
+import SendIcon from "@mui/icons-material/Send";
+import { useState } from "react";
 const drawerWidth = 400;
 
 const InputElement = styled("input")(
-  ({ theme }) => `
+  () => `
   width:100%;
   color:white;
   background-color:#252728;
@@ -40,35 +40,28 @@ const InputElement = styled("input")(
   &::placeholder{ color: gray};
 `
 );
-interface Props {
-  window?: () => Window;
-}
 
 export default function SinglePost({
   window,
   singlePost,
   closePost,
   createComment,
-  setSinglePost,
 }: {
   window?: () => Window;
   singlePost: PostInterface | null;
-  closePost: Function;
-  createComment:Function;
-  setSinglePost:any
+  closePost: () => void;
+  createComment: (data: { content: string; post: string | undefined }) => void;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
 
-  const commentRef = useRef<HTMLInputElement>(null);
-
-  const handleCommentChange = (e:React.FocusEvent<HTMLInputElement>)=>{
-    setComment(e.target.value)
-  }
-  const createNewComment = ()=>{
-    createComment({content:comment,post:singlePost?._id})
-  }
+  const handleCommentChange = (e: React.FocusEvent<HTMLInputElement>) => {
+    setComment(e.target.value);
+  };
+  const createNewComment = () => {
+    createComment({ content: comment, post: singlePost?._id });
+  };
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -136,7 +129,12 @@ export default function SinglePost({
 
       <Paper
         component="form"
-        sx={{ p: "2px 4px", display: "flex", alignItems: "center",bgcolor:'#252728' }}
+        sx={{
+          p: "2px 4px",
+          display: "flex",
+          alignItems: "center",
+          bgcolor: "#252728",
+        }}
       >
         <Input
           onBlur={handleCommentChange}
@@ -148,23 +146,23 @@ export default function SinglePost({
           disableUnderline
           slots={{ input: InputElement }}
           inputProps={{
-            "aria-label": "What's on your mind?"
+            "aria-label": "What's on your mind?",
           }}
         />
         <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
         <IconButton color="primary" sx={{ p: "10px" }} aria-label="directions">
-          <SendIcon sx={{color:'white'}} onClick={createNewComment} />
+          <SendIcon sx={{ color: "white" }} onClick={createNewComment} />
         </IconButton>
       </Paper>
       <Divider />
       <Box sx={{ minHeight: "100vh" }}>
-        {singlePost?.comments.map((comment) => (
-          <Comment key={comment._id} comment={comment} />
+        {singlePost?.comments.map((comment, i) => (
+          <Comment key={i} comment={comment} />
         ))}
       </Box>
     </div>
   );
-  
+
   const container =
     window !== undefined ? () => window().document.body : undefined;
 
@@ -179,7 +177,7 @@ export default function SinglePost({
           bgcolor: "#252728",
         }}
       >
-        <Toolbar sx={{pt:13,pb:2}}>
+        <Toolbar sx={{ pt: 13, pb: 2 }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"

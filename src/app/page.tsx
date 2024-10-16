@@ -1,21 +1,28 @@
 "use client";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import {Box,Divider,Grid,Input,Typography,Modal,Button,IconButton,Paper} from "@mui/material";
+import {
+  Box,
+  Grid,
+  Input,
+  Typography,
+  Modal,
+  Button,
+  IconButton,
+} from "@mui/material";
 import Posts from "./_components/Posts/Posts";
 import { Post as PostInterface } from "./../interfaces/post.type";
 import SinglePost from "./_components/SinglePost/SinglePost";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { styled } from "@mui/system";
 import toast from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
-import { store } from "@/lib/Redux/Store";
 import Loader from "./_components/Loader/Loader";
 import { redirect } from "next/navigation";
-
+import { getUserToken } from "@/lib/Redux/tokenSlice/TokenSlice";
+import { useDispatch } from "react-redux";
 
 const InputElement = styled("input")(
-  ({ theme }) => `
+  () => `
   width:100%;
   color:white;
   background-color:#252728;
@@ -46,7 +53,6 @@ export default function Home() {
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [isPageLoading, setIsPageLoading] = useState<boolean>(false);
-  const dispatch = useDispatch()
   const removeFocus = useRef<HTMLInputElement>(null);
   const postCaptionRef = useRef<HTMLInputElement>(null);
   const postImgRef = useRef<HTMLInputElement>(null);
@@ -58,8 +64,15 @@ export default function Home() {
     setOpen(false);
   };
   useEffect(() => {
-    if(!localStorage.getItem("token")){
-      redirect('/login')
+    if (!localStorage.getItem("token")) {
+      redirect("/login");
+    }
+  }, []);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      dispatch(getUserToken(localStorage.getItem("token")));
     }
   }, []);
   useEffect(() => {
@@ -93,7 +106,7 @@ export default function Home() {
         },
       })
       .then((res) => res.data.posts)
-      .catch((err) => {
+      .catch(() => {
         toast.error("Something Went wrong", { position: "top-center" });
       });
   };
@@ -107,11 +120,11 @@ export default function Home() {
       })
       .then((res) => {
         setSinglePost(res.data.post);
-        setIsPageLoading(false)
+        setIsPageLoading(false);
       })
-      .catch((err) => {
+      .catch(() => {
         toast.error("Something Went wrong", { position: "top-center" });
-        setIsPageLoading(false)
+        setIsPageLoading(false);
       });
   };
   const closePost = (): void => {
@@ -126,37 +139,38 @@ export default function Home() {
       const postImg = postImgRef.current?.files[0];
       payLoad.append("image", postImg);
     }
-    setIsPageLoading(true)
+    setIsPageLoading(true);
     axios
       .post("https://linked-posts.routemisr.com/posts", payLoad, {
         headers: {
           token: localStorage.getItem("token"),
         },
       })
-      .then((res) => {
+      .then(() => {
         toast.success("Post Created Successfully", { position: "top-right" });
-        setIsPageLoading(false)
+        setIsPageLoading(false);
         setOpen(false);
       })
-      .catch((err) => {
+      .catch(() => {
         toast.error("Something Went wrong", { position: "top-right" });
         setOpen(false);
-        setIsPageLoading(false)
+        setIsPageLoading(false);
       });
   };
-  const createComment = (data:{content:string,post:string})=>{
-    axios.post('https://linked-posts.routemisr.com/comments',data,{
-      headers: {
-        token: localStorage.getItem("token"),
-      },
-    }).then((res)=>{console.log("res",res);
-    }).catch((err)=>{console.log('err',err);
-    })
-  }
-  
+  const createComment = (data: {
+    content: string;
+    post: string | undefined;
+  }) => {
+    axios
+      .post("https://linked-posts.routemisr.com/comments", data, {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      })};
+
   return (
     <>
-    {isPageLoading&&<Loader/>}
+      {isPageLoading && <Loader />}
       <div className={singlePost ? "hidden" : ""}>
         <Grid container spacing={3}>
           <Grid item xs={3}>
@@ -192,8 +206,12 @@ export default function Home() {
                 />
               </IconButton>
             </Box>
-            {posts.map((post) => (
-              <Posts key={post._id} post={post} getSinglePost={getSinglePost} />
+            {posts.map((post, i) => (
+              <Posts
+                key={post._id + "-" + `${i}`}
+                post={post}
+                getSinglePost={getSinglePost}
+              />
             ))}
             {loading && (
               <i className="fa fa-spinner fa-spin text-[#252728] fa-2x mx-auto my-3"></i>
@@ -203,20 +221,18 @@ export default function Home() {
           <Grid item xs={3}></Grid>
         </Grid>
       </div>
-       
-        <div
-          className={
-            singlePost ? "fixed top-0 bottom-0 left-0 right-0 z-50" : "hidden"
-          }
-        >
-          <SinglePost
-            singlePost={singlePost}
-            setSinglePost={setSinglePost}
-            closePost={closePost}
-            createComment={createComment}
-          />
-        </div>
-      
+
+      <div
+        className={
+          singlePost ? "fixed top-0 bottom-0 left-0 right-0 z-50" : "hidden"
+        }
+      >
+        <SinglePost
+          singlePost={singlePost}
+          closePost={closePost}
+          createComment={createComment}
+        />
+      </div>
 
       {/* Create comment */}
       <Modal

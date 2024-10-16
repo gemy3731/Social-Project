@@ -5,11 +5,6 @@ import {
   Paper,
   TextField,
   Button,
-  FormControl,
-  InputLabel,
-  InputAdornment,
-  Input,
-  Modal,
   Divider,
 } from "@mui/material";
 import Image from "next/image";
@@ -21,11 +16,9 @@ import avatarImg from "@/images/default-avatar-profile-picture-male-icon.webp";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { redirect } from "next/navigation";
-// const StyledInput = styled(Input)(({ theme }) => ({
-//     input: {
-//       color: 'red', // Change the input text color to red
-//     },
-//   }));
+import { getUserToken } from "@/lib/Redux/tokenSlice/TokenSlice";
+import { useDispatch } from "react-redux";
+
 const VisuallyHiddenInput = styled("input")({
   height: "100%",
   overflow: "hidden",
@@ -38,11 +31,19 @@ const VisuallyHiddenInput = styled("input")({
   width: "100%",
   opacity: 0,
 });
-export default function page() {
+export default function Profile() {
   const [isLoading,setIsloading] = useState(false)
   const [userData, setUserData] = useState<User>();
   const [showBtn, setShowBtn] = useState(false);
   const [updatePass, setUpdatePass] = useState(false);
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    if(localStorage.getItem('token')){
+      dispatch(getUserToken(localStorage.getItem('token')))
+    }
+  },[])
+
   useEffect(() => {
     if(!localStorage.getItem("token")){
       redirect('/login')
@@ -68,7 +69,7 @@ export default function page() {
       });
   };
   const uploadProfilePhoto = () => {
-    let profileImg: File | null | undefined =
+    const profileImg: File | null | undefined =
       profileImageRef.current?.files?.[0];
     const formBody = new FormData();
     if (profileImg) {
@@ -81,12 +82,11 @@ export default function page() {
         },
       })
       .then((res) => {
-        console.log("res hna", res);
         getUserData();
         setShowBtn(false);
       })
       .catch((err) => {
-        console.log("err hna", err);
+        console.log("err", err);
       });
   };
   const handleBtn = () => {
@@ -103,7 +103,6 @@ export default function page() {
       setUpdatePass(false)
       setIsloading(false)
       localStorage.setItem('token',res.data.token)
-      console.log('res',res)
     }).catch((err)=>{
       console.log('err',err)
     })
@@ -161,7 +160,6 @@ export default function page() {
           <Box
             className={showBtn ? "!hidden group" : "group"}
             onClick={handleBtn}
-            // className="group"
             sx={{
               ml: "auto",
               width: "100px",

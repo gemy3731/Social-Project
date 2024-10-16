@@ -1,20 +1,12 @@
 "use client";
 import * as React from "react";
-import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import InputBase from "@mui/material/InputBase";
-import Badge from "@mui/material/Badge";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import MailIcon from "@mui/icons-material/Mail";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import Image from "next/image";
 import LPLogo from "../../../images/lp-logo.png";
@@ -24,46 +16,6 @@ import { store } from "@/lib/Redux/Store";
 import { clearUserToken } from "@/lib/Redux/tokenSlice/TokenSlice";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(3),
-    width: "auto",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "20ch",
-    },
-  },
-}));
 
 export default function NavBar() {
   const { userToken } = useSelector(
@@ -82,10 +34,6 @@ export default function NavBar() {
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
@@ -196,8 +144,8 @@ export default function NavBar() {
   );
 
   return (
-    <Box sx={{ flexGrow: 1,zIndex:'10' }}>
-      <AppBar position="fixed" sx={{ backgroundColor: "#252728",px:4 }}>
+    <Box sx={{ flexGrow: 1, zIndex: "10" }}>
+      <AppBar position="fixed" sx={{ backgroundColor: "#252728", px: 4 }}>
         <Toolbar>
           <Link href="/">
             <Typography
@@ -210,8 +158,6 @@ export default function NavBar() {
           </Link>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-           
-
             {!userToken && (
               <Button href="/register" variant="text" sx={{ color: "white" }}>
                 Register
@@ -219,19 +165,19 @@ export default function NavBar() {
             )}
             {userToken ? (
               <Box>
- <Button href="/" variant="text" sx={{ color: "white" }}>
-              Home
-            </Button>
-            <Button href="/profile" variant="text" sx={{ color: "white" }}>
-              Profile
-            </Button>
-              <Button
-                onClick={handleLogOut}
-                variant="text"
-                sx={{ color: "white" }}
-              >
-                Logout
-              </Button>
+                <Button href="/" variant="text" sx={{ color: "white" }}>
+                  Home
+                </Button>
+                <Button href="/profile" variant="text" sx={{ color: "white" }}>
+                  Profile
+                </Button>
+                <Button
+                  onClick={handleLogOut}
+                  variant="text"
+                  sx={{ color: "white" }}
+                >
+                  Logout
+                </Button>
               </Box>
             ) : (
               <Button href="/login" variant="text" sx={{ color: "white" }}>
