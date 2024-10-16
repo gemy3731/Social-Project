@@ -1,11 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Paper, TextField, Button, Typography, Box } from "@mui/material";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import Link from "next/link";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { getUserToken } from "@/lib/Redux/tokenSlice/TokenSlice";
 
@@ -14,6 +14,11 @@ export default function Login() {
   const [isError, setIsError] = useState(null);
   const navigate = useRouter();
   const dispatch = useDispatch();
+  useEffect(() => {
+    if(localStorage.getItem("token")){
+      redirect('/')
+    }
+  }, []);
   const onSubmit = (values: { email: string; password: string }) => {
     setIsloading(true);
     setIsError(null);

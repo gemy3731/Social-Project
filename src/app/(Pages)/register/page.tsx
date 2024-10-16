@@ -1,15 +1,20 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { MenuItem, Select, InputLabel, Paper, TextField, FormControl, Button, Typography, Box } from '@mui/material'
 import { useFormik } from 'formik'
 import * as yup from 'yup';
 import Link from 'next/link';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 export default function Register() {
   const [isLoading,setIsloading] = useState(false)
   const [isError,setIsError] = useState(null)
   const navigate = useRouter()
+  useEffect(() => {
+    if(localStorage.getItem("token")){
+      redirect('/')
+    }
+  }, []);
   const onSubmit = (values:{name:string,email:string,password:string,rePassword:string,dateOfBirth:string,gender:string})=>{
     setIsloading(true)
     setIsError(null)
