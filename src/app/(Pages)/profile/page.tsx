@@ -81,7 +81,7 @@ export default function Profile() {
           token: localStorage.getItem("token"),
         },
       })
-      .then((res) => {
+      .then(() => {
         getUserData();
         setShowBtn(false);
       })

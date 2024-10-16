@@ -9,13 +9,12 @@ import Collapse from "@mui/material/Collapse";
 import Avatar from "@mui/material/Avatar";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import { red } from "@mui/material/colors";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
 import CommentIcon from "@mui/icons-material/Comment";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Post as PostInterface } from "@/interfaces/post.type";
-import { Box, Input, TextField } from "@mui/material";
+import { Box, Input } from "@mui/material";
 import Image from "next/image";
 import avatarImg from '@/images/download.png'
 interface ExpandMoreProps extends IconButtonProps {
@@ -23,7 +22,7 @@ interface ExpandMoreProps extends IconButtonProps {
 }
 
 const ExpandMore = styled((props: ExpandMoreProps) => {
-  const { expand, ...other } = props;
+  const { ...other } = props;
   return <IconButton {...other} />;
 })(({ theme }) => ({
   marginLeft: "auto",
@@ -32,7 +31,7 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
-export default function Posts({ post,getSinglePost }: { post: PostInterface;getSinglePost:Function }) {
+export default function Posts({ post,getSinglePost }: { post: PostInterface;getSinglePost:(id: string)=> void  }) {
   const [expanded, setExpanded] = React.useState(false);
   
   const handleExpandClick = () => {
@@ -147,7 +146,6 @@ export default function Posts({ post,getSinglePost }: { post: PostInterface;getS
               {post.comments[1]&&<Typography sx={{ marginBlock: 1, color:'#1aa3e9',textDecoration:'underLine', cursor:'pointer' }} onClick={()=>{getSinglePost(post._id)}}>
                 See All
               </Typography>}
-              {/* <TextField  placeholder='Comment...' type='text' fullWidth sx={{ input: { color: 'white',border: "1px solid #EAEAEA",borderRadius:'100vh',"&::placeholder": { color: "gray" } } }} InputLabelProps={{ className: '!text-white' }} /> */}
               <Input onFocus={()=>{getSinglePost(post._id)}} disableUnderline placeholder='Comment...' type='text' fullWidth sx={{mt:1,input: { color: 'white',p:1,border: "1px solid gray",borderRadius:'100vh',"&::placeholder": { color: "gray" } } }}></Input>
             </Box>
           </CardContent>

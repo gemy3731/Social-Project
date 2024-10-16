@@ -9,8 +9,6 @@ import { store } from "@/lib/Redux/Store";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "../theme";
 import { Toaster } from "react-hot-toast";
-import { useEffect } from "react";
-import { getUserToken } from "@/lib/Redux/tokenSlice/TokenSlice";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
